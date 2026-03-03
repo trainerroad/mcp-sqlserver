@@ -197,8 +197,29 @@ cd ~/.claude/mcp-sqlserver && npm install && npm run build
 ### Step 3: Determine auth method
 
 Ask the user how they authenticate to their SQL Server:
-- **Azure AD** — They need `az login` with the correct account. Verify with `az account show`.
-- **SQL auth** — They need a username and password.
+- **Azure AD** — Continue to Step 3a.
+- **SQL auth** — They need a username and password. Skip to Step 4.
+
+### Step 3a: Verify Azure CLI is installed and signed in
+
+Run `az --version` to check if the Azure CLI is installed. If the command is not found, stop and tell the user:
+
+> **Azure CLI is required for Azure AD authentication but is not installed.**
+> Install it from https://learn.microsoft.com/en-us/cli/azure/install-azure-cli
+>
+> Quick install commands:
+> - **Windows:** `winget install Microsoft.AzureCLI`
+> - **macOS:** `brew install azure-cli`
+> - **Linux:** `curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash`
+>
+> After installing, restart your terminal and run this setup again.
+
+Do NOT continue with the remaining steps until `az --version` succeeds.
+
+Once Azure CLI is confirmed installed, run `az account show --query "{name:name, user:user.name}" -o table` to check the login status.
+
+- If signed in, confirm the account shown is the one with database access. If not, tell the user to run `az login` and sign in with the correct account.
+- If not signed in (error), tell the user to run `az login` and complete the browser sign-in flow, then re-run `az account show` to confirm.
 
 ### Step 4: Register the MCP server
 
