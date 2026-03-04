@@ -165,7 +165,11 @@ async function runServer() {
           const serverDir = pathDirname(fileURLToPath(import.meta.url));
           const defaultCachePath = pathJoin(serverDir, '..', '.schema-cache', `${dbNameForCache}.md`);
           const schemaCachePath = process.env.SQLSERVER_SCHEMA_CACHE_PATH || defaultCachePath;
-          const schemaCache = new SchemaCache(schemaCachePath);
+          const domainSourcePath = process.env.SQLSERVER_DOMAIN_SOURCE_PATH;
+          if (domainSourcePath) {
+            console.error(`Domain source: ${domainSourcePath}`);
+          }
+          const schemaCache = new SchemaCache(schemaCachePath, domainSourcePath);
           console.error(`Schema cache: ${schemaCachePath}`);
 
           this.initializeTools(config.maxRows || 1000, schemaCache);
