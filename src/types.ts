@@ -112,3 +112,29 @@ export interface TableStats {
   index_size_kb: number;
   total_size_kb: number;
 }
+
+export interface DomainColumnRename {
+  property: string;
+  column: string;
+}
+
+export interface DomainRelationship {
+  navigation: string;
+  targetEntity: string;
+  foreignKey: string;
+  type: 'required' | 'optional' | 'one-to-one' | 'many-to-many';
+  junctionTable?: string;
+  leftKey?: string;
+  rightKey?: string;
+}
+
+export interface DomainEntity {
+  entityName: string;
+  tableName: string;
+  schema: string;
+  primaryKey: string;
+  discriminator?: { column: string; value: string };
+  columnRenames: DomainColumnRename[];
+  relationships: DomainRelationship[];
+  ignoredProperties: string[];
+}
