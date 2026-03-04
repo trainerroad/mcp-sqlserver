@@ -109,4 +109,32 @@ describe('DomainMapper.generateDomainContext', () => {
     const result = DomainMapper.generateDomainContext('/nonexistent/path');
     expect(result).toBeNull();
   });
+
+  it('generates markdown with entity mappings from fixture files', () => {
+    const domainRoot = join(fixturesDir, 'domain-root');
+    const result = DomainMapper.generateDomainContext(domainRoot);
+    expect(result).not.toBeNull();
+
+    // Header
+    expect(result).toContain('# Domain Entity Mappings');
+    expect(result).toMatch(/4 entities parsed/);
+
+    // Entity -> Table Index entries (4 parseable configs, NotParseable.cs skipped)
+    expect(result).toContain('Activity -> dbo.Activity');
+    expect(result).toContain('WorkoutRecord -> dbo.CyclingActivity');
+    expect(result).toContain('CyclingActivityMlClassification -> dbo.WorkoutRecordMlClassification');
+    expect(result).toContain('BaseTeam -> dbo.Team');
+    expect(result).toContain('discriminator: Type=0');
+
+    // Column Renames section
+    expect(result).toContain('## Column Renames');
+    expect(result).toContain('CyclingActivityMlClassification.Type -> Classification');
+
+    // Relationships section
+    expect(result).toContain('## Relationships');
+    expect(result).toContain('Activity.Member -> Member via MemberId (required)');
+    expect(result).toContain('Activity.Workout -> Workout via WorkoutId (optional)');
+    expect(result).toContain('Activity.CyclingActivity -> CyclingActivity (1:1)');
+    expect(result).toContain('WorkoutRecord.Followers -> Followers[] via ActivityFollower(ActivityId, MemberId)');
+  });
 });

@@ -177,7 +177,7 @@ export class SchemaCache {
       try {
         const domainContext = DomainMapper.generateDomainContext(this.domainSourcePath);
         if (domainContext) {
-          markdown += domainContext;
+          markdown += '\r\n' + domainContext;
         }
       } catch (error) {
         console.error('Warning: Failed to generate domain context:', error);
